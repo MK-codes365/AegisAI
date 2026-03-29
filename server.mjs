@@ -397,7 +397,11 @@ app.get('/api/test-comprehend', async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`\nAegisAI Backend running on http://localhost:${PORT}`);
-  console.log(`Region: ${REGION} | Model: ${MODEL_ID}\n`);
-});
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\nAegisAI Backend running on http://localhost:${PORT}`);
+    console.log(`Region: ${REGION} | Model: ${MODEL_ID}\n`);
+  });
+}
+
+export default app;
