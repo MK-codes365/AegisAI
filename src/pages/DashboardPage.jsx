@@ -13,7 +13,7 @@ import {
 import './DashboardPage.css';
 
 export default function DashboardPage({ onTicketClick }) {
-  const { filteredTickets, getStats, analytics, clusters, resolveCluster } = useTickets();
+  const { filteredTickets, getStats, analytics, clusters, resolveCluster, agents } = useTickets();
   const stats = getStats();
 
   const criticalTickets = filteredTickets.filter((t) => t.urgency === 'critical' || t.status === 'escalated');
@@ -303,7 +303,7 @@ export default function DashboardPage({ onTicketClick }) {
               </div>
             </div>
             <div className="agent-list">
-              {AGENTS.map((agent) => (
+              {agents.map((agent) => (
                 <div key={agent.id} className="agent-item">
                   <div className="agent-info">
                     <span className="agent-avatar">{agent.avatar}</span>
@@ -316,7 +316,7 @@ export default function DashboardPage({ onTicketClick }) {
                     <div className="progress-bar agent-progress">
                       <div
                         className="progress-bar-fill"
-                        style={{ width: `${Math.min(agent.tickets * 7, 100)}%` }}
+                        style={{ width: `${Math.min(agent.tickets * 10, 100)}%` }}
                       ></div>
                     </div>
                     <span className="agent-ticket-count">{agent.tickets}</span>
