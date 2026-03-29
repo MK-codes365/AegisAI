@@ -13,7 +13,7 @@ import {
 import './DashboardPage.css';
 
 export default function DashboardPage({ onTicketClick }) {
-  const { filteredTickets, getStats, analytics, clusters, resolveCluster, agents } = useTickets();
+  const { filteredTickets, getStats, analytics, clusters, resolveCluster, agents, lastSync } = useTickets();
   const stats = getStats();
 
   const criticalTickets = filteredTickets.filter((t) => t.urgency === 'critical' || t.status === 'escalated');
@@ -293,13 +293,18 @@ export default function DashboardPage({ onTicketClick }) {
 
           {/* Agent Load */}
           <div className="glass-card-static agent-load-card">
-            <div className="chart-header" style={{ padding: 'var(--space-5)' }}>
+            <div className="chart-header" style={{ padding: 'var(--space-5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h4 className="chart-title">
                   <Users size={16} />
                   Agent Workload
                 </h4>
                 <p className="chart-subtitle">Current ticket distribution</p>
+              </div>
+              <div className="live-status-badge">
+                <span className="live-dot"></span>
+                <span className="live-text">LIVE</span>
+                <span className="sync-time">{lastSync}</span>
               </div>
             </div>
             <div className="agent-list">

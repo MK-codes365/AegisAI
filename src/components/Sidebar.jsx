@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   Ticket,
@@ -30,17 +30,19 @@ export default function Sidebar() {
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       {/* Logo */}
-      <div className="sidebar-logo">
-        <div className="logo-icon">
-          <img src="/logo.png" alt="AegisAI" className="sidebar-logo-img" />
-        </div>
-        {!collapsed && (
-          <div className="logo-text">
-            <span className="logo-title">AegisAI</span>
-            <span className="logo-subtitle">Smart Prioritizer</span>
+      <Link to="/" className="sidebar-logo-link">
+        <div className="sidebar-logo">
+          <div className="logo-icon">
+            <img src="/logo.png" alt="AegisAI" className="sidebar-logo-img" />
           </div>
-        )}
-      </div>
+          {!collapsed && (
+            <div className="logo-text">
+              <span className="logo-title">AegisAI</span>
+              <span className="logo-subtitle">Smart Prioritizer</span>
+            </div>
+          )}
+        </div>
+      </Link>
 
       {/* Collapse Toggle */}
       <button

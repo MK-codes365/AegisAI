@@ -1,5 +1,6 @@
 import { useState, createContext, useContext, useCallback, useEffect, useMemo } from 'react';
 import { getTickets, updateTicket as apiUpdateTicket, isBackendAvailable } from '../utils/api';
+import { AGENTS } from '../utils/constants';
 // import { mockTickets, mockAnalytics } from '../utils/mockData';
 
 const TicketContext = createContext(null);
@@ -13,6 +14,7 @@ export const useTickets = () => {
 export function TicketProvider({ children }) {
   const [tickets, setTickets] = useState([]);
   const [isOffline, setIsOffline] = useState(false);
+  const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString());
   
   // Dynamic analytics calculated from real ticket data
   const analytics = useMemo(() => {
@@ -108,6 +110,14 @@ export function TicketProvider({ children }) {
       }))
       .sort((a, b) => b.count - a.count);
   }, [tickets]);
+
+  // Real-time Agent Workload calculation
+  const agents = useMemo(() => {
+    return AGENTS.map(agent => ({
+      ...agent,
+      tickets: tickets.filter(t => t.assignedTo === agent.id && t.status !== 'resolved').length
+    }));
+  }, [tickets]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [filters, setFilters] = useState({
     status: 'all',
@@ -133,6 +143,7 @@ export function TicketProvider({ children }) {
         if (data && isMounted) {
           setTickets(data);
           setIsOffline(false);
+          setLastSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
         }
       } catch (err) {
         console.warn('Sync failed:', err.message);
@@ -141,9 +152,9 @@ export function TicketProvider({ children }) {
     };
 
     fetchTickets();
-
-    // Poll every 5 seconds for "real-time" sync
-    const interval = setInterval(fetchTickets, 5000);
+    
+    // Snappier 2-second polling for true real-time feel
+    const interval = setInterval(fetchTickets, 2000);
 
     return () => {
       isMounted = false;
@@ -240,7 +251,9 @@ export function TicketProvider({ children }) {
         getStats,
         analytics,
         clusters,
+        agents,
         isOffline,
+        lastSync,
       }}
     >
       {children}
